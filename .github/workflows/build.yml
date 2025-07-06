@@ -24,17 +24,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push image with SBOM
+      - name: Build and push image and SBOM
         run: |
           docker buildx bake --push --sbom=true --provenance=false
-
-      - name: Generate SLSA 3 provenance
-        uses: slsa-framework/slsa-github-generator/.github/workflows/builder_container-based_slsa3.yml@v2.0.0
-        with:
-          image: docker.io/proskemax/node-alpine-hardened:latest
-          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-        secrets:
-          registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Scan image
         uses: docker/scout-action@v1
@@ -53,4 +45,13 @@ jobs:
 
       - name: Display SBOM & provenance
         run: |
-          docker buildx imagetools inspect docker.io/proskemax/node-alpine-hardened:latest 
+          docker buildx imagetools inspect docker.io/proskemax/node-alpine-hardened:latest
+
+  # Top level required for workflow isolation 
+  provenance:
+    needs: harden
+    uses: slsa-framework/slsa-github-generator/.github/workflows/builder_container-based_slsa3.yml@v2.0.0
+    with:
+      image: docker.io/proskemax/node-alpine-hardened:latest
+      registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      registry-password: ${{ secrets.DOCKERHUB_TOKEN }} 
