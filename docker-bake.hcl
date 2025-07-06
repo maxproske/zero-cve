@@ -11,12 +11,12 @@ target "node-alpine-hardened" {
   platforms = ["linux/amd64", "linux/arm64"]
 
   # `bake --push` is shorthand for `--set=*.output=type=registry`
-  # output = ["type=registry"]
+  output = ["type=registry"]
 
   # `bake --sbom` is shorthand for `--set=*.attest=type=sbom`
   # `bake --provenance` is shorthand for `--set=*.attest=type=provenance`
-  # attest = [
-  #   "type=provenance,mode=max",
-  #   "type=sbom"
-  # ]
+  attest = [
+    "type=provenance,mode=max",
+    "type=sbom"
+  ]
 }
