@@ -27,15 +27,12 @@ jobs:
         run: |
           docker buildx bake --push
 
-      - name: Check Scout version
-        run: docker scout version
-
-      - name: List Scout manpage
-        run: docker scout --help
-
       - name: Scan image
-        run: |
-          docker scout cves docker.io/proskemax/node-alpine-hardened:latest --exit-code --only-severity critical,high,medium,low
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: docker.io/proskemax/node-alpine-hardened:latest
+          only-severities: critical,high,medium,low
 
       - uses: sigstore/cosign-installer@v3
 
