@@ -23,7 +23,7 @@ jobs:
           username: maxproske
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push image
+      - name: Build and push image with SBOM and provenance
         run: |
           docker buildx bake --push
 

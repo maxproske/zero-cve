@@ -9,9 +9,5 @@ target "node-alpine-hardened" {
     "docker.io/proskemax/node-alpine-hardened:latest"
   ]
   platforms = ["linux/amd64", "linux/arm64"]
-  output = ["type=registry"]
-  sbom = true
-  provenance = {
-    mode = "max"
-  }
-} 
+  output = ["type=registry,provenance=mode=max,sbom=true"]
+}
