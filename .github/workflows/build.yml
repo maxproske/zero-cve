@@ -20,12 +20,19 @@ jobs:
 
       - uses: docker/login-action@v3
         with:
-          username: maxproske
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push image with SBOM and provenance
+      - name: Build and push image with SBOM
         run: |
-          docker buildx bake --push --provenance=mode=max --sbom=true
+          docker buildx bake --push --sbom=true --provenance=false
+
+      - name: Generate SLSA 3 provenance
+        uses: slsa-framework/slsa-github-generator@v2.0.0
+        with:
+          image: docker.io/proskemax/node-alpine-hardened:latest
+          registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Scan image
         uses: docker/scout-action@v1

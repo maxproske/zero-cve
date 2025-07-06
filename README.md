@@ -4,5 +4,17 @@ Build pipeline that rebuilds `node:alpine`, fixing all known vulnerabilities so 
 
 - [X] Bake
 - [X] Scout
-- [X] SLSA Level 3
+- [X] SLSA Level 1 (BuildKit)
+- [X] SLSA Level 2 (OIDC)
+- [X] SLSA Level 3 (SLSA Framework)
 - [ ] Obtain perfect Scout health score
+
+## Learnings
+
+- GitHub Actions w/ **BuildKit** is **SLSA 1**. The provenance exists but is **unsigned**, meaning anyone could have faked it.
+- GitHub Actions w/ **OIDC** is **SLSA 2**. The provenance is **signed** on a trusted CI, which is good for transparency, but not enough for SLSA 3.
+- GitHub Actions w/ **SLSA Framework** is **SLSA 3**. CI is auditably **isolated** to run in a fresh VM.
+
+## Resources
+
+- 
