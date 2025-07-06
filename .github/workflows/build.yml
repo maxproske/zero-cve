@@ -5,6 +5,7 @@ on:
     branches: [main]
   schedule:
     - cron: '0 2 * * *' # Rebuild nightly
+  workflow_dispatch:
 
 jobs:
   harden:
