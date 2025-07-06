@@ -7,13 +7,17 @@ on:
     - cron: '0 2 * * *' # Rebuild nightly
   workflow_dispatch:
 
+permissions:
+  actions: read
+  packages: write # For publishing to registry
+  id-token: write # For signing image
+
 jobs:
   harden:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-      packages: write
+    outputs:
+      image: docker.io/proskemax/node-alpine-hardened:latest
+      digest: ${{ steps.image_digest.outputs.IMAGE_DIGEST }}
     steps:
       - uses: actions/checkout@v4
 
@@ -46,13 +50,20 @@ jobs:
       - name: Display SBOM & provenance
         run: |
           docker buildx imagetools inspect docker.io/proskemax/node-alpine-hardened:latest
+      - name: Output image digest
+        id: image_digest
+        run: |
+          echo "IMAGE_DIGEST=$(docker buildx imagetools inspect docker.io/proskemax/node-alpine-hardened:latest --format '{{json .Digest}}' | tr -d '\"')" >> $GITHUB_OUTPUT
 
   # Top level required for workflow isolation 
   provenance:
     needs: harden
     uses: slsa-framework/slsa-github-generator/.github/workflows/builder_container-based_slsa3.yml@v2.0.0
     with:
-      image: docker.io/proskemax/node-alpine-hardened:latest
+      image: ${{ needs.harden.outputs.image }}
+      digest: ${{ needs.harden.outputs.digest }}
+      builder-image: docker.io/docker/buildx-bin:latest
+      builder-digest: sha256:71923cc78f99c462c8578ed270f079c1c234dd70e17913e25e838e4a1721b769
     secrets:
       registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-      registry-password: ${{ secrets.DOCKERHUB_TOKEN }} 
+      registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
