@@ -8,7 +8,7 @@ target "node-alpine-hardened" {
   tags = [
     "docker.io/proskemax/node-alpine-hardened:latest"
   ]
-  platforms = ["linux/arm64", "linux/arm64"]
+  platforms = ["linux/amd64", "linux/arm64"]
   output = ["type=registry"]
   sbom = true
   provenance = {
