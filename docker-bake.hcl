@@ -1,0 +1,17 @@
+group "default" {
+  targets = ["node-alpine-hardened"]
+}
+
+target "node-alpine-hardened" {
+  context = "."
+  dockerfile = "Dockerfile"
+  tags = [
+    "docker.io/proskemax/node-alpine-hardened:latest"
+  ]
+  platforms = ["linux/arm64", "linux/arm64"]
+  output = ["type=registry"]
+  sbom = true
+  provenance = {
+    mode = "max"
+  }
+} 
