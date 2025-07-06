@@ -52,9 +52,10 @@ jobs:
   provenance:
     needs: harden
     permissions:
-      id-token: write
       contents: read
       actions: read
+      id-token: write # Required for OIDC signing
+      packages: write # Required to upload provenance to release tab
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     # We just need the image verified, not built
     with:
