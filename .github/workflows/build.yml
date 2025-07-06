@@ -35,7 +35,7 @@ jobs:
           push: true
           tags: docker.io/proskemax/node-alpine-hardened:latest
           sbom: true # SBOM OCI for Scout
-          provenance: false # Leave provenance to SLSA generator
+          provenance: mode=max # Leave provenance to SLSA generator
 
       - name: Scan image (CVE gate)
         uses: docker/scout-action@v1
