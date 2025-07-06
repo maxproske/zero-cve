@@ -9,8 +9,9 @@ on:
 
 permissions:
   actions: read
-  packages: write # For publishing to registry
-  id-token: write # For signing image
+  contents: read # Required for provenance
+  packages: write # Required for publishing to registry
+  id-token: write # Required for signing image
 
 jobs:
   harden:
@@ -64,6 +65,7 @@ jobs:
       digest: ${{ needs.harden.outputs.digest }}
       builder-image: docker.io/docker/buildx-bin:latest
       builder-digest: sha256:71923cc78f99c462c8578ed270f079c1c234dd70e17913e25e838e4a1721b769
+      config-path: ./docker-bake.hcl
     secrets:
       registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
       registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
