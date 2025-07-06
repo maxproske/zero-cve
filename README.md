@@ -2,12 +2,12 @@
 
 Build pipeline that rebuilds `node:alpine`, fixing all known vulnerabilities so Docker Scout returns 0 Critical/High/Medium/Low. Includes a software bill of materials and SLSA Level 3 provenance.
 
-- [X] Bake
 - [X] Scout
 - [X] SLSA Level 1 (BuildKit)
 - [X] SLSA Level 2 (OIDC)
-- [X] SLSA Level 3 (SLSA Framework)
+- [ ] SLSA Level 3 (SLSA Framework)
 - [ ] Obtain perfect Scout health score
+- [ ] Bake
 
 ## Learnings
 
@@ -17,4 +17,4 @@ Build pipeline that rebuilds `node:alpine`, fixing all known vulnerabilities so 
 
 ## Resources
 
-- 
+- https://docs.docker.com/dhi/core-concepts/slsa/
