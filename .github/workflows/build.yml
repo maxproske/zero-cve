@@ -25,7 +25,7 @@ jobs:
 
       - name: Build and push image with SBOM and provenance
         run: |
-          docker buildx bake
+          docker buildx bake --push --provenance=mode=max --sbom
 
       - name: Scan image
         uses: docker/scout-action@v1
