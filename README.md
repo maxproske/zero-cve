@@ -1,13 +1,20 @@
 # Learn Supply Chain Security
 
-Build pipeline that rebuilds `node:alpine`, fixing all known vulnerabilities so Docker Scout returns 0 Critical/High/Medium/Low. Includes a software bill of materials and SLSA Level 3 provenance.
+Rebuilds `node:alpine` patching all known vulnerabilities with SLSA 3 provenance.
+
+## Roadmap
 
 - [X] Scout
 - [X] SLSA Level 1 (BuildKit max provenance)
 - [X] SLSA Level 2 (OIDC)
 - [X] SLSA Level 3 (SLSA DSSE object)
 - [X] Obtain Scout health score "A"
+- [X] Nightly rebuild
+- [ ] VEX
+- [ ] Further shrink attack surface
+- [ ] FIPS variant
 - [ ] Bake
+- [ ] Distroless
 
 ## Learnings
 
