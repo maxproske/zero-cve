@@ -1,11 +1,11 @@
 name: Harden Node Alpine
 
-on:
-  push:
-    branches: [main]
-  schedule:
-    - cron: '0 2 * * *' # Rebuild nightly
-  workflow_dispatch:
+# on:
+#   push:
+#     branches: [main]
+#   schedule:
+#     - cron: '0 2 * * *' # Rebuild nightly
+#   workflow_dispatch:
 
 jobs:
   harden:
