@@ -1,6 +1,4 @@
-# Learn Supply Chain Security
-
-Rebuilds `node:alpine` patching all known vulnerabilities with SLSA 3 provenance.
+Rebuilds `node:alpine` patching all known vulnerabilities with SLSA 3 provenance and a surprise inside!
 
 ## Roadmap
 
