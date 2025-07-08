@@ -1,39 +1,55 @@
-name: Decode Out Artifact
+name: Harden Node Alpine
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 2 * * *' # Rebuild nightly
   workflow_dispatch:
 
 jobs:
-  decode:
+  harden:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
+      id-token: write # Required for cosign OIDC signing
     outputs:
-      image: docker.io/proskemax/slsa3-cv:latest
+      image:  docker.io/proskemax/slsa3-cv:latest
       digest: ${{ steps.build.outputs.digest }}
+
     steps:
       - uses: actions/checkout@v4
+
+      - uses: docker/setup-qemu-action@v3
+
       - uses: docker/setup-buildx-action@v3
+
       - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push decode image
+
+      - name: Build and push image with SBOM
         id: build
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile
-          target: decode
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: docker.io/proskemax/slsa3-cv:latest
-          sbom: false
-          provenance: mode=max
+          sbom: true # SBOM OCI for Scout
+          provenance: mode=max # For the badge, but leave provenance to SLSA generator
+
+      - name: Scan image (CVE gate)
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: docker.io/proskemax/slsa3-cv:latest
+          only-severities: critical,high,medium,low
+
       - uses: sigstore/cosign-installer@v3
-      - name: Sign decode image
+
+      - name: Sign image
         env:
           COSIGN_EXPERIMENTAL: "1"
         run: |
@@ -41,17 +57,18 @@ jobs:
             --oidc-issuer https://token.actions.githubusercontent.com \
             docker.io/proskemax/slsa3-cv:latest
 
-  decode-provenance:
-    needs: decode
+  # Top level required for workflow isolation
+  provenance:
+    needs: harden
     permissions:
       contents: read
       actions: read
-      id-token: write
-      packages: write
+      id-token: write # Required for cosign OIDC signing
+      packages: write # Required to push DSSE blob to release tab
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.1.0
     with:
-      image: docker.io/proskemax/slsa3-cv
-      digest: ${{ needs.decode.outputs.digest }}
+      image:  docker.io/proskemax/slsa3-cv
+      digest: ${{ needs.harden.outputs.digest }}
     secrets:
       registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
-      registry-password: ${{ secrets.DOCKERHUB_TOKEN }} 
+      registry-password: ${{ secrets.DOCKERHUB_TOKEN }}
